@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private Mat curr_frame;
     private Mat[] output_klt;
     private KLT optical_flow;
+    private IMU_estimator imu_estimator;
 
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this)
@@ -95,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mOpenCvCameraView.setCameraPermissionGranted();
         mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
+
+        // init IMU_estimator
+        imu_estimator = new IMU_estimator(this.getApplicationContext());
     }
 
     @Override
@@ -129,6 +133,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame)
     {
+        float[] velocity = imu_estimator.getVelocity();
+        // Convert the velocity to mph
+        float xVelocityMph = velocity[0] * 2.23694f;
+        float yVelocityMph = velocity[1] * 2.23694f;
+        float zVelocityMph = velocity[2] * 2.23694f;
+
+        // Get the magnitude of the velocity vector
+        float speedMph = (float) Math.sqrt(xVelocityMph * xVelocityMph + yVelocityMph * yVelocityMph + zVelocityMph * zVelocityMph);
+        vel_pred_text.setText(String.valueOf(speedMph));
+
+
         curr_frame = inputFrame.rgba();
         output_klt = optical_flow.run(curr_frame);
         if (output_klt[0] != null) {

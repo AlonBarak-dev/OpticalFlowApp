@@ -137,7 +137,7 @@ public class KLT {
             currMv.y += prevMv.y;
             velocity = Math.sqrt((currMv.x-200)*(currMv.x-200) + (currMv.y-200)*(currMv.y-200));
             Log.d("VEL", "" + (currMv.x-200) + "  " + (currMv.y-200));
-            vel_label.setText(String.valueOf(velocity));
+//            vel_label.setText(String.valueOf(velocity));
             Imgproc.line(MVframe, prevMv, currMv, color, 4);
         }
 
