@@ -1,6 +1,7 @@
 package com.example.opticalflow;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -30,13 +31,15 @@ public class KLT {
     private MatOfFloat err;
     private Scalar color;
     private int flow_pts;
-    private boolean update_features;
+    private boolean update_features, is_valid;
     private Point prevMv, currMv;
-    private double x_avg1, x_avg2, y_avg1, y_avg2;
+    private double x_avg1, x_avg2, y_avg1, y_avg2, velocity;
     Queue<Mat> in_frames, out_frames;
+    TextView vel_label;
 
 
-    public KLT(){
+    public KLT(TextView vel_label_init){
+        vel_label = vel_label_init;
         prevFrame = new Mat();
         currFrame = new Mat();
         prevGray = new Mat();
@@ -50,6 +53,7 @@ public class KLT {
         flow_pts = 500;
         MVframe = new Mat(400,400, CvType.CV_8UC1);
         update_features = false;
+        is_valid = false;
     }
 
 
@@ -131,6 +135,9 @@ public class KLT {
         else{
             currMv.x += prevMv.x;
             currMv.y += prevMv.y;
+            velocity = Math.sqrt((currMv.x-200)*(currMv.x-200) + (currMv.y-200)*(currMv.y-200));
+            Log.d("VEL", "" + (currMv.x-200) + "  " + (currMv.y-200));
+            vel_label.setText(String.valueOf(velocity));
             Imgproc.line(MVframe, prevMv, currMv, color, 4);
         }
 

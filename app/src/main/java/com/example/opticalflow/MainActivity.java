@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
-        // KLT
-        optical_flow = new KLT();
-        output_klt = new Mat[2];
         init_ui();
+        // KLT
+        optical_flow = new KLT(vel_pred_text);
+        output_klt = new Mat[2];
     }
 
     private void init_ui(){
