@@ -35,10 +35,10 @@
         android:text="reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/motion_vector"
-        app:layout_constraintVertical_bias="0.555" />
+        app:layout_constraintVertical_bias="0.222" />
 
     <Button
         android:id="@+id/update_features_button"
@@ -47,7 +47,19 @@
         android:text="update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.945"
         app:layout_constraintStart_toEndOf="@+id/resetMV"
+        app:layout_constraintTop_toBottomOf="@+id/motion_vector"
+        app:layout_constraintVertical_bias="0.222" />
+
+    <TextView
+        android:id="@+id/vel_pred"
+        android:layout_width="94dp"
+        android:layout_height="40dp"
+        android:text="Velocity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/resetMV"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/motion_vector" />
 
 

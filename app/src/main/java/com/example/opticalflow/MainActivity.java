@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private CameraBridgeViewBase mOpenCvCameraView;
     private ImageView motionVector;
     private Button reset_button, update_features_button;
+    private TextView vel_pred_text;
     private Mat curr_frame;
     private Mat[] output_klt;
     private KLT optical_flow;
@@ -70,6 +72,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         // KLT
         optical_flow = new KLT();
         output_klt = new Mat[2];
+        init_ui();
+    }
+
+    private void init_ui(){
+        // velocity prediction label
+        vel_pred_text = (TextView)findViewById(R.id.vel_pred);
         // reset Button
         reset_button = (Button)findViewById(R.id.resetMV);
         reset_button.setOnClickListener(this);
@@ -88,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
+
     @Override
     protected void onResume()
     {
