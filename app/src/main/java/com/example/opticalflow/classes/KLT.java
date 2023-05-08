@@ -30,7 +30,7 @@ public class KLT implements OpticalFlow {
     private Point[] prevPts_arr, currPts_arr;
     private MatOfFloat err;
     private Scalar color;
-    private int flow_pts;
+    private int flow_pts, max_corners;
     private boolean update_features, is_valid;
     private Point prevMv, currMv;
     private double x_avg1, x_avg2, y_avg1, y_avg2, velocity;
@@ -54,6 +54,7 @@ public class KLT implements OpticalFlow {
         MVframe = Mat.zeros(400, 400, CvType.CV_8UC1);
         update_features = false;
         is_valid = false;
+        max_corners = 50;
     }
 
 
@@ -71,7 +72,7 @@ public class KLT implements OpticalFlow {
         currGray.copyTo(prevGray);
         // detect features in the first frame
         MatOfPoint corners = new MatOfPoint();
-        Imgproc.goodFeaturesToTrack(prevGray, corners, 500, 0.1, 5);
+        Imgproc.goodFeaturesToTrack(prevGray, corners, max_corners, 0.1, 5);
         prevPts.fromArray(corners.toArray());
     }
 
@@ -90,7 +91,7 @@ public class KLT implements OpticalFlow {
             output[1] = null;
             return output;
         }
-        if (flow_pts < 300 || this.update_features){
+        if (flow_pts < max_corners / 5 || this.update_features){
             this.update_points(prevGray, currGray, prevPts);
             this.update_features = false;
         }
@@ -130,7 +131,6 @@ public class KLT implements OpticalFlow {
         if (prevMv == null){
             currMv.x += 200;
             currMv.y += 200;
-            prevMv = currMv;
         }
         else{
             currMv.x += prevMv.x;
@@ -139,8 +139,8 @@ public class KLT implements OpticalFlow {
             Log.d("VEL", "" + (currMv.x-200) + "  " + (currMv.y-200));
 //            vel_label.setText(String.valueOf(velocity));
             Imgproc.line(MVframe, prevMv, currMv, color, 4);
-            prevMv = currMv;
         }
+        prevMv = currMv;
 
         Log.d("RUN-OF", "Processed");
         // update variables for next iteration

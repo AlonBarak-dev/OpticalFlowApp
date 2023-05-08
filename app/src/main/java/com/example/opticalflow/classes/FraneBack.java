@@ -51,7 +51,7 @@ public class FraneBack implements OpticalFlow {
 
         // draw the optical flow
         currFrame.copyTo(flow_rgb);
-        drawOptFlowMap(flow_gray, flow_rgb, 16, new Scalar(0, 255, 0));
+        drawOptFlowMap(flow_gray, flow_rgb, 64, new Scalar(0, 255, 0));
 
         // update the variables for the next loop
         currGray.copyTo(prevGray);
