@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private ImageView motionVector;
     private Button reset_button, update_features_button;
     private Switch of_type;
+    private SeekBar sensitivity_bar;
     private TextView vel_pred_text;
     private Mat curr_frame;
     private Mat[] output;
@@ -101,6 +103,26 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         // init switch
         of_type = (Switch) findViewById(R.id.of_type);
         of_type.setOnClickListener(this);
+
+        // init seek bar
+        sensitivity_bar = (SeekBar) findViewById(R.id.sensitivity_bar);
+        sensitivity_bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.d("SEEK", String.valueOf(progress));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override

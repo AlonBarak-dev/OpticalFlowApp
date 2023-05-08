@@ -7,8 +7,8 @@
 
     <org.opencv.android.JavaCameraView
         android:id="@+id/camera_view"
-        android:layout_width="399dp"
-        android:layout_height="475dp"
+        android:layout_width="398dp"
+        android:layout_height="430dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,6 +75,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/vel_pred"
         app:layout_constraintVertical_bias="0.272" />
+
+    <SeekBar
+        android:id="@+id/sensitivity_bar"
+        android:layout_width="188dp"
+        android:layout_height="33dp"
+        android:max="500"
+        android:min="50"
+        android:progress="50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.616"
+        app:layout_constraintStart_toEndOf="@+id/of_type"
+        app:layout_constraintTop_toBottomOf="@+id/update_features_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

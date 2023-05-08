@@ -33,6 +33,7 @@ public class KLT implements OpticalFlow {
     private int flow_pts, max_corners;
     private boolean update_features, is_valid;
     private Point prevMv, currMv;
+    private int limit;
     private double x_avg1, x_avg2, y_avg1, y_avg2, velocity;
     TermCriteria criteria = new TermCriteria(TermCriteria.COUNT + TermCriteria.EPS,10,0.03);
     TextView vel_label;
@@ -50,11 +51,15 @@ public class KLT implements OpticalFlow {
         status = new MatOfByte();
         err = new MatOfFloat();
         color = new Scalar(240,230,140);
-        flow_pts = 500;
         MVframe = Mat.zeros(400, 400, CvType.CV_8UC1);
         update_features = false;
         is_valid = false;
         max_corners = 50;
+        flow_pts = max_corners;
+    }
+
+    public void set_sensitivity(int value){
+        max_corners = value;
     }
 
 
@@ -91,7 +96,8 @@ public class KLT implements OpticalFlow {
             output[1] = null;
             return output;
         }
-        if (flow_pts < max_corners / 5 || this.update_features){
+        limit = max_corners / 5;
+        if (flow_pts < limit || this.update_features){
             this.update_points(prevGray, currGray, prevPts);
             this.update_features = false;
         }

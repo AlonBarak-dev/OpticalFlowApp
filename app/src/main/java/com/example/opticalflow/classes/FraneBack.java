@@ -73,6 +73,12 @@ public class FraneBack implements OpticalFlow {
         // Do nothing
     }
 
+    @Override
+    public void set_sensitivity(int value) {
+        // TBD
+    }
+
+
 
     private void drawOptFlowMap(Mat flow, Mat flowmap, int step, Scalar color) {
         for (int y = 0; y < flowmap.rows(); y += step) {
