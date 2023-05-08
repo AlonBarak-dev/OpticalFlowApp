@@ -1,4 +1,4 @@
-package com.example.opticalflow;
+package com.example.opticalflow.classes;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,15 +9,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.example.opticalflow.interfaces.OpticalFlow;
+import com.example.opticalflow.R;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
-
-
-
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, View.OnClickListener {
     private final String TAG = MainActivity.class.getSimpleName();
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         // init switch
         of_type = (Switch) findViewById(R.id.of_type);
+        of_type.setOnClickListener(this);
     }
 
     @Override
@@ -171,6 +173,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             case R.id.update_features_button:
                 optical_flow.UpdateFeatures();
                 break;
+            case R.id.of_type:
+                if (of_type.isChecked()){
+                    optical_flow = new FraneBack();
+                }
+                else{
+                    optical_flow = new KLT(vel_pred_text);
+                }
             default:
                 break;
         }

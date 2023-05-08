@@ -7,18 +7,18 @@
 
     <org.opencv.android.JavaCameraView
         android:id="@+id/camera_view"
-        android:layout_width="393dp"
-        android:layout_height="441dp"
+        android:layout_width="399dp"
+        android:layout_height="475dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.055" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/motion_vector"
-        android:layout_width="342dp"
-        android:layout_height="170dp"
+        android:layout_width="320dp"
+        android:layout_height="140dp"
         android:rotation="90"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         android:text="update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.272"
         app:layout_constraintStart_toEndOf="@+id/resetMV"
         app:layout_constraintTop_toBottomOf="@+id/motion_vector"
         app:layout_constraintVertical_bias="0.0" />

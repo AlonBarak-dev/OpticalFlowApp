@@ -1,4 +1,4 @@
-package com.example.opticalflow;
+package com.example.opticalflow.classes;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

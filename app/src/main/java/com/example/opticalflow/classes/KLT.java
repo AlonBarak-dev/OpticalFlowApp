@@ -1,9 +1,10 @@
-package com.example.opticalflow;
+package com.example.opticalflow.classes;
 
 import android.util.Log;
 import android.widget.TextView;
 
-import org.opencv.core.Core;
+import com.example.opticalflow.interfaces.OpticalFlow;
+
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -12,15 +13,14 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.core.TermCriteria;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 
-public class KLT implements OpticalFlow{
+public class KLT implements OpticalFlow {
 
     private Mat prevFrame, currFrame, prevGray, currGray, MVframe;
     private Mat[] output;
@@ -34,7 +34,7 @@ public class KLT implements OpticalFlow{
     private boolean update_features, is_valid;
     private Point prevMv, currMv;
     private double x_avg1, x_avg2, y_avg1, y_avg2, velocity;
-    Queue<Mat> in_frames, out_frames;
+    TermCriteria criteria = new TermCriteria(TermCriteria.COUNT + TermCriteria.EPS,10,0.03);
     TextView vel_label;
 
 
@@ -51,14 +51,14 @@ public class KLT implements OpticalFlow{
         err = new MatOfFloat();
         color = new Scalar(240,230,140);
         flow_pts = 500;
-        MVframe = new Mat(400,400, CvType.CV_8UC1);
+        MVframe = Mat.zeros(400, 400, CvType.CV_8UC1);
         update_features = false;
         is_valid = false;
     }
 
 
     public void reset_motion_vector(){
-        MVframe = new Mat(400,400, CvType.CV_8UC1);
+        MVframe = Mat.zeros(400, 400, CvType.CV_8UC1);
         prevMv = null;
         currMv = null;
     }
@@ -126,7 +126,7 @@ public class KLT implements OpticalFlow{
         x_avg2 /= flow_pts;
         y_avg2 /= flow_pts;
 
-        currMv = new Point(x_avg1 - x_avg2, y_avg1 - y_avg2);
+        currMv = new Point((x_avg1 - x_avg2)/10, (y_avg1 - y_avg2)/10);
         if (prevMv == null){
             currMv.x += 200;
             currMv.y += 200;
@@ -139,6 +139,7 @@ public class KLT implements OpticalFlow{
             Log.d("VEL", "" + (currMv.x-200) + "  " + (currMv.y-200));
 //            vel_label.setText(String.valueOf(velocity));
             Imgproc.line(MVframe, prevMv, currMv, color, 4);
+            prevMv = currMv;
         }
 
         Log.d("RUN-OF", "Processed");

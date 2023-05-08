@@ -1,4 +1,4 @@
-package com.example.opticalflow;
+package com.example.opticalflow.interfaces;
 
 import org.opencv.core.Mat;
 
