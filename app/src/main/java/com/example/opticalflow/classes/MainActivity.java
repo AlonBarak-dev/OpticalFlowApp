@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Log.d("SEEK", String.valueOf(progress));
-
+                optical_flow.set_sensitivity(progress);
             }
 
             @Override

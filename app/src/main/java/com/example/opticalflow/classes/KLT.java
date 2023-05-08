@@ -13,12 +13,11 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.core.TermCriteria;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
+import java.util.concurrent.Semaphore;
 
-import java.util.Queue;
 
 public class KLT implements OpticalFlow {
 
@@ -35,8 +34,8 @@ public class KLT implements OpticalFlow {
     private Point prevMv, currMv;
     private int limit;
     private double x_avg1, x_avg2, y_avg1, y_avg2, velocity;
-    TermCriteria criteria = new TermCriteria(TermCriteria.COUNT + TermCriteria.EPS,10,0.03);
-    TextView vel_label;
+    private Semaphore semaphore;
+    private TextView vel_label;
 
 
     public KLT(TextView vel_label_init){
@@ -56,10 +55,17 @@ public class KLT implements OpticalFlow {
         is_valid = false;
         max_corners = 50;
         flow_pts = max_corners;
+        semaphore = new Semaphore(1);
     }
 
     public void set_sensitivity(int value){
-        max_corners = value;
+        try{
+            semaphore.acquire();
+            max_corners = value;
+            semaphore.release();
+        } catch (Exception e){
+            Log.e("SENSITIVITY", "Failed to acquire semaphore");
+        }
     }
 
 
@@ -96,10 +102,17 @@ public class KLT implements OpticalFlow {
             output[1] = null;
             return output;
         }
-        limit = max_corners / 5;
-        if (flow_pts < limit || this.update_features){
-            this.update_points(prevGray, currGray, prevPts);
-            this.update_features = false;
+        try{
+            semaphore.acquire();
+            limit = max_corners / 5;
+            if (flow_pts < limit || this.update_features){
+                this.update_points(prevGray, currGray, prevPts);
+                this.update_features = false;
+            }
+            semaphore.release();
+        }
+        catch (Exception e){
+            Log.e("SENSITIVITY", "Failed to acquire semaphore");
         }
 
         // Run the KLT algorithm for Optical Flow
