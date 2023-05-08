@@ -7,25 +7,25 @@
 
     <org.opencv.android.JavaCameraView
         android:id="@+id/camera_view"
-        android:layout_width="397dp"
-        android:layout_height="433dp"
+        android:layout_width="393dp"
+        android:layout_height="441dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintVertical_bias="0.055" />
 
     <ImageView
         android:id="@+id/motion_vector"
-        android:layout_width="398dp"
-        android:layout_height="208dp"
+        android:layout_width="342dp"
+        android:layout_height="170dp"
         android:rotation="90"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/camera_view"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.105"
         app:srcCompat="@drawable/ic_launcher_foreground" />
 
     <Button
@@ -38,19 +38,19 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/motion_vector"
-        app:layout_constraintVertical_bias="0.222" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/update_features_button"
-        android:layout_width="144dp"
-        android:layout_height="48dp"
+        android:layout_width="140dp"
+        android:layout_height="49dp"
         android:text="update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/resetMV"
         app:layout_constraintTop_toBottomOf="@+id/motion_vector"
-        app:layout_constraintVertical_bias="0.222" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/vel_pred"
@@ -59,8 +59,22 @@
         android:text="Velocity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/resetMV"
+        app:layout_constraintHorizontal_bias="0.134"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/motion_vector" />
+        app:layout_constraintTop_toBottomOf="@+id/motion_vector"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Switch
+        android:id="@+id/of_type"
+        android:layout_width="122dp"
+        android:layout_height="48dp"
+        android:text="Dense"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vel_pred"
+        app:layout_constraintVertical_bias="0.272" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

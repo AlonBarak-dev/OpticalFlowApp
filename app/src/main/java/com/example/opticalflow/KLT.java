@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-public class KLT {
+public class KLT implements OpticalFlow{
 
     private Mat prevFrame, currFrame, prevGray, currGray, MVframe;
     private Mat[] output;

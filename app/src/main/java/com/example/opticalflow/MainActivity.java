@@ -1,14 +1,12 @@
 package com.example.opticalflow;
-
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import org.opencv.android.BaseLoaderCallback;
@@ -16,11 +14,9 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, View.OnClickListener {
@@ -38,10 +34,11 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private CameraBridgeViewBase mOpenCvCameraView;
     private ImageView motionVector;
     private Button reset_button, update_features_button;
+    private Switch of_type;
     private TextView vel_pred_text;
     private Mat curr_frame;
-    private Mat[] output_klt;
-    private KLT optical_flow;
+    private Mat[] output;
+    private OpticalFlow optical_flow;
     private IMU_estimator imu_estimator;
 
 
@@ -71,9 +68,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
         init_ui();
-        // KLT
+        // first initialize with KLT optical flow
         optical_flow = new KLT(vel_pred_text);
-        output_klt = new Mat[2];
+        output = new Mat[2];
     }
 
     private void init_ui(){
@@ -99,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         // init IMU_estimator
         imu_estimator = new IMU_estimator(this.getApplicationContext());
+
+        // init switch
+        of_type = (Switch) findViewById(R.id.of_type);
     }
 
     @Override
@@ -143,13 +143,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         float speedMph = (float) Math.sqrt(xVelocityMph * xVelocityMph + yVelocityMph * yVelocityMph + zVelocityMph * zVelocityMph);
         vel_pred_text.setText(String.valueOf(speedMph));
 
-
         curr_frame = inputFrame.rgba();
-        output_klt = optical_flow.run(curr_frame);
-        if (output_klt[0] != null) {
-            if (output_klt[1] != null) {
-                Bitmap dst = Bitmap.createBitmap(output_klt[1].width(), output_klt[1].height(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(output_klt[1], dst);
+        output = optical_flow.run(curr_frame);
+        if (output[0] != null) {
+            if (output[1] != null) {
+                Bitmap dst = Bitmap.createBitmap(output[1].width(), output[1].height(), Bitmap.Config.ARGB_8888);
+                Utils.matToBitmap(output[1], dst);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     }
                 });
             }
-            return output_klt[0];
+            return output[0];
         }
         return inputFrame.rgba();
     }
