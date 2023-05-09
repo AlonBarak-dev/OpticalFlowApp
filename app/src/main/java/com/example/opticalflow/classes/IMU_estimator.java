@@ -5,6 +5,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.util.Log;
+
+import java.util.concurrent.Semaphore;
 
 public class IMU_estimator implements SensorEventListener {
 
@@ -20,6 +23,7 @@ public class IMU_estimator implements SensorEventListener {
     private float[] velocity = new float[3];
     private float[] position = new float[3];
     private long lastUpdateTime;
+    private Semaphore semaphore;
 
     public IMU_estimator(Context context){
         // Get a reference to the SensorManager
@@ -32,6 +36,9 @@ public class IMU_estimator implements SensorEventListener {
         // Register this class as a listener for the sensors
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+
+        // init binary Semaphore
+        semaphore = new Semaphore(1);
 
         // Initialize the last update time
         lastUpdateTime = System.currentTimeMillis();
@@ -75,9 +82,16 @@ public class IMU_estimator implements SensorEventListener {
         velocity[2] = 0.8f * velocity[2] + 0.2f * angularVelocity[2];
 
         // Use the velocity estimate to update the position
-        position[0] += velocity[0] * deltaTime;
-        position[1] += velocity[1] * deltaTime;
-        position[2] += velocity[2] * deltaTime;
+        try {
+            semaphore.acquire();
+            position[0] += velocity[0] * deltaTime;
+            position[1] += velocity[1] * deltaTime;
+            position[2] += velocity[2] * deltaTime;
+            semaphore.release();
+        }
+        catch (Exception e){
+            Log.e("IMU", "Failed to acquire semaphore");
+        }
     }
 
     @Override
@@ -92,7 +106,15 @@ public class IMU_estimator implements SensorEventListener {
 
     public float[] getPosition() {
         // Return the current position estimate
-        return position.clone();
+        float[] output = new float[3];
+        try{
+            semaphore.acquire();
+            output = position.clone();
+            semaphore.release();
+        }catch (Exception e){
+            Log.e("IMU", "Failed to acquire semaphore");
+        }
+        return output;
     }
 
     public void stop() {

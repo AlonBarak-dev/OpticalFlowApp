@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame)
     {
         float[] velocity = imu_estimator.getVelocity();
+        float[] imu_position = imu_estimator.getPosition();
         // Convert the velocity to mph
         float xVelocityMph = velocity[0] * 2.23694f;
         float yVelocityMph = velocity[1] * 2.23694f;
