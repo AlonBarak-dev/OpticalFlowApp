@@ -164,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         float yVelocityMph = velocity[1] * 2.23694f;
         float zVelocityMph = velocity[2] * 2.23694f;
 
+        Log.d("POS", String.valueOf(imu_position[0]) + ", " + String.valueOf(imu_position[1]) + ", " + String.valueOf(imu_position[2]));
+
         // Get the magnitude of the velocity vector
         float speedMph = (float) Math.sqrt(xVelocityMph * xVelocityMph + yVelocityMph * yVelocityMph + zVelocityMph * zVelocityMph);
         vel_pred_text.setText(String.valueOf(speedMph));
