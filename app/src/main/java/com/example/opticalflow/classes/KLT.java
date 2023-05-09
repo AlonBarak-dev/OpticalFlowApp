@@ -3,6 +3,7 @@ package com.example.opticalflow.classes;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.opticalflow.dataTypes.OF_output;
 import com.example.opticalflow.interfaces.OpticalFlow;
 
 import org.opencv.core.CvType;
@@ -21,7 +22,7 @@ import java.util.concurrent.Semaphore;
 
 public class KLT implements OpticalFlow {
 
-    private Mat prevFrame, currFrame, prevGray, currGray, MVframe;
+    private Mat prevFrame, currFrame, prevGray, currGray;
     private Mat[] output;
     private MatOfPoint2f prevPts, currPts;
     private MatOfByte status;
@@ -33,9 +34,10 @@ public class KLT implements OpticalFlow {
     private boolean update_features, is_valid;
     private Point prevMv, currMv;
     private int limit;
-    private double x_avg1, x_avg2, y_avg1, y_avg2, velocity;
+    private double x_avg1, x_avg2, y_avg1, y_avg2;
     private Semaphore semaphore;
     private TextView vel_label;
+    private OF_output of_output;
 
 
     public KLT(TextView vel_label_init){
@@ -45,12 +47,12 @@ public class KLT implements OpticalFlow {
         prevGray = new Mat();
         currGray = new Mat();
         output = new Mat[2];
+        of_output = new OF_output();
         prevPts = new MatOfPoint2f();
         currPts = new MatOfPoint2f();
+        color = new Scalar(240,230,140);
         status = new MatOfByte();
         err = new MatOfFloat();
-        color = new Scalar(240,230,140);
-        MVframe = Mat.zeros(400, 400, CvType.CV_8UC1);
         update_features = false;
         is_valid = false;
         max_corners = 50;
@@ -70,7 +72,6 @@ public class KLT implements OpticalFlow {
 
 
     public void reset_motion_vector(){
-        MVframe = Mat.zeros(400, 400, CvType.CV_8UC1);
         prevMv = null;
         currMv = null;
     }
@@ -87,7 +88,7 @@ public class KLT implements OpticalFlow {
         prevPts.fromArray(corners.toArray());
     }
 
-    public Mat[] run(Mat new_frame){
+    public OF_output run(Mat new_frame){
         // init
         Log.d("RUN-OF", "started");
         currFrame = new_frame;
@@ -98,9 +99,9 @@ public class KLT implements OpticalFlow {
         // if this is the first loop, find good features
         if (prevGray.empty()){
             this.update_points(prevGray, currGray, prevPts);
-            output[0] = null;
-            output[1] = null;
-            return output;
+            of_output.of_frame = null;
+            of_output.position = null;
+            return of_output;
         }
         try{
             semaphore.acquire();
@@ -154,10 +155,6 @@ public class KLT implements OpticalFlow {
         else{
             currMv.x += prevMv.x;
             currMv.y += prevMv.y;
-            velocity = Math.sqrt((currMv.x-200)*(currMv.x-200) + (currMv.y-200)*(currMv.y-200));
-            Log.d("VEL", "" + (currMv.x-200) + "  " + (currMv.y-200));
-//            vel_label.setText(String.valueOf(velocity));
-            Imgproc.line(MVframe, prevMv, currMv, color, 4);
         }
         prevMv = currMv;
 
@@ -165,9 +162,10 @@ public class KLT implements OpticalFlow {
         // update variables for next iteration
         currGray.copyTo(prevGray);
         prevPts.fromArray(currPts.toArray());
-        output[0] = currFrame;
-        output[1] = MVframe;
-        return output;
+
+        of_output.of_frame = currFrame;
+        of_output.position = currMv;
+        return of_output;
 
     }
 

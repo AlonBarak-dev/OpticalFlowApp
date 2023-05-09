@@ -1,5 +1,7 @@
 package com.example.opticalflow.interfaces;
 
+import org.opencv.core.Point;
+
 public interface Sensor_fusion {
 
 
@@ -11,7 +13,7 @@ public interface Sensor_fusion {
      * @param of_position
      * @return
      */
-    public float[] getPosition(float[] imu_velocity, float[] imu_position, float[] of_position);
+    public float[] getPosition(float[] imu_velocity, float[] imu_position, Point of_position);
 
 
 

@@ -15,7 +15,13 @@ public class MotionVectorViz {
     public MotionVectorViz(int rows, int cols){
         // initialize new Motion vector matrix
         motion_vector = Mat.zeros(rows, cols, CvType.CV_8UC1);
-        color = new Scalar(0, 255, 0);
+        color = new Scalar(240,230,140);
+        prevMV = null;
+        currMV = null;
+    }
+
+    public void reset_motion_vector(){
+        motion_vector = Mat.zeros(400, 400, CvType.CV_8UC1);
         prevMV = null;
         currMV = null;
     }
@@ -29,6 +35,8 @@ public class MotionVectorViz {
         }
 
         Imgproc.line(motion_vector, prevMV, currMV, color, 4);
+
+        prevMV = currMV;
 
         return motion_vector;
     }

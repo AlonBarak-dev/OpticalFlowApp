@@ -1,9 +1,11 @@
 package com.example.opticalflow.interfaces;
 
+import com.example.opticalflow.dataTypes.OF_output;
+
 import org.opencv.core.Mat;
 
 public interface OpticalFlow {
-    public Mat[] run(Mat new_frame);
+    public OF_output run(Mat new_frame);
     public void reset_motion_vector();
     public void UpdateFeatures();
 

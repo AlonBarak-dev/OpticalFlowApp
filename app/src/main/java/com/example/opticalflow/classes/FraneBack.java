@@ -2,6 +2,7 @@ package com.example.opticalflow.classes;
 
 import android.util.Log;
 
+import com.example.opticalflow.dataTypes.OF_output;
 import com.example.opticalflow.interfaces.OpticalFlow;
 
 import org.opencv.core.CvType;
@@ -22,6 +23,7 @@ public class FraneBack implements OpticalFlow {
     private final int poly_n = 5;
     private final double poly_sigma = 1.2;
     private final int flags = 0;
+    private OF_output of_output;
 
     public FraneBack(){
         prevFrame = new Mat();
@@ -32,9 +34,11 @@ public class FraneBack implements OpticalFlow {
         currGray = new Mat();
         motion_vector = Mat.zeros(400, 400, CvType.CV_8UC1);
         output = new Mat[2];
+        of_output = new OF_output();
+
     }
 
-    public Mat[] run(Mat new_frame){
+    public OF_output run(Mat new_frame){
         Log.d("RUN-OF", "started");
         currFrame = new_frame;
 
@@ -57,9 +61,9 @@ public class FraneBack implements OpticalFlow {
         currGray.copyTo(prevGray);
 
         // create the output array
-        output[0] = flow_rgb;
-        output[1] = motion_vector;
-        return output;
+        of_output.of_frame = flow_rgb;
+        of_output.position = new Point(0, 0);
+        return of_output;
 
     }
 

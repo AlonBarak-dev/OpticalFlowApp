@@ -11,14 +11,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.opticalflow.dataTypes.OF_output;
 import com.example.opticalflow.interfaces.OpticalFlow;
 import com.example.opticalflow.R;
+import com.example.opticalflow.interfaces.Sensor_fusion;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, View.OnClickListener {
@@ -39,10 +42,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private Switch of_type;
     private SeekBar sensitivity_bar;
     private TextView vel_pred_text;
-    private Mat curr_frame;
-    private Mat[] output;
+    private Mat curr_frame, mv_mat;
+    private OF_output output;
     private OpticalFlow optical_flow;
     private IMU_estimator imu_estimator;
+    private Sensor_fusion fusion;
+    private float[] fuse_output;
+    private MotionVectorViz mv_viewer;
 
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this)
@@ -71,9 +77,21 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_layout);
         init_ui();
+        init_vars();
+    }
+
+    private void init_vars(){
         // first initialize with KLT optical flow
         optical_flow = new KLT(vel_pred_text);
-        output = new Mat[2];
+        output = new OF_output();
+
+        // init fusion algorithm
+        fusion = new Basic_fusion();
+        fuse_output = new float[3];
+
+        // init motion vector viewer
+        mv_viewer = new MotionVectorViz(400, 400);
+        mv_mat = Mat.zeros(400, 400, CvType.CV_8UC1);
     }
 
     private void init_ui(){
@@ -157,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame)
     {
+        // get IMU variables
         float[] velocity = imu_estimator.getVelocity();
         float[] imu_position = imu_estimator.getPosition();
         // Convert the velocity to mph
@@ -170,20 +189,29 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         float speedMph = (float) Math.sqrt(xVelocityMph * xVelocityMph + yVelocityMph * yVelocityMph + zVelocityMph * zVelocityMph);
         vel_pred_text.setText(String.valueOf(speedMph));
 
+        // get OF output
         curr_frame = inputFrame.rgba();
         output = optical_flow.run(curr_frame);
-        if (output[0] != null) {
-            if (output[1] != null) {
-                Bitmap dst = Bitmap.createBitmap(output[1].width(), output[1].height(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(output[1], dst);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        motionVector.setImageBitmap(dst);
-                    }
-                });
-            }
-            return output[0];
+
+        if (output.of_frame != null) {
+
+            // fuse the IMU sensor with the Optical Flow
+            fuse_output = fusion.getPosition(velocity, imu_position, output.position);
+
+            // get Motion Vector Mat to present
+            mv_mat = mv_viewer.getMotionVector(output.position);
+
+            // draw Motion Vector
+            Bitmap dst = Bitmap.createBitmap(mv_mat.width(), mv_mat.height(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(mv_mat, dst);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    motionVector.setImageBitmap(dst);
+                }
+            });
+
+            return output.of_frame;
         }
         return inputFrame.rgba();
     }
@@ -194,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         switch (v.getId()){
             case R.id.resetMV:
                 optical_flow.reset_motion_vector();
+                mv_viewer.reset_motion_vector();
                 break;
             case R.id.update_features_button:
                 optical_flow.UpdateFeatures();
