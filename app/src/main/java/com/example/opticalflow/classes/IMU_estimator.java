@@ -15,8 +15,11 @@ public class IMU_estimator implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor gyroscope;
+    private Sensor magnetometer;
+
 
     private float[] gravity = new float[3];
+    private float[] magnitude = new float[3];
     private float[] linearAcceleration = new float[3];
     private float[] rotationVector = new float[3];
     private float[] angularVelocity = new float[3];
@@ -31,11 +34,13 @@ public class IMU_estimator implements SensorEventListener {
 
         // Get references to the accelerometer and gyroscope sensors
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         // Register this class as a listener for the sensors
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         // init binary Semaphore
         semaphore = new Semaphore(1);
@@ -64,6 +69,9 @@ public class IMU_estimator implements SensorEventListener {
                 rotationVector = event.values.clone();
                 angularVelocity = event.values.clone();
                 break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                magnitude = event.values.clone();
+                break;
         }
         // Calculate the linear acceleration by subtracting the gravity vector
         // from the accelerometer readings
@@ -81,6 +89,16 @@ public class IMU_estimator implements SensorEventListener {
         velocity[1] = 0.8f * velocity[1] + 0.2f * angularVelocity[1];
         velocity[2] = 0.8f * velocity[2] + 0.2f * angularVelocity[2];
 
+        // orientation
+        float[] RotationMatrix = new float[9];
+        SensorManager.getRotationMatrix(RotationMatrix, null, gravity, magnitude);
+        // Express the updated rotation matrix as three orientation angles.
+        final float[] orientationAngles = new float[3];
+        SensorManager.getOrientation(RotationMatrix, orientationAngles);
+        convertToDegrees(orientationAngles);
+        Log.d("ORIENTATION", orientationAngles[0] + ", " + orientationAngles[1] + ", " + orientationAngles[2]);
+
+
         // Use the velocity estimate to update the position
         try {
             semaphore.acquire();
@@ -91,6 +109,12 @@ public class IMU_estimator implements SensorEventListener {
         }
         catch (Exception e){
             Log.e("IMU", "Failed to acquire semaphore");
+        }
+    }
+
+    private void convertToDegrees(float[] vector){
+        for (int i = 0; i < vector.length; i++){
+            vector[i] = Math.round(Math.toDegrees(vector[i]));
         }
     }
 
