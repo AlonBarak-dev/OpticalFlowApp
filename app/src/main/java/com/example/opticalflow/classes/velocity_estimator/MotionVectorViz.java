@@ -15,7 +15,7 @@ public class MotionVectorViz {
     public MotionVectorViz(int rows, int cols){
         // initialize new Motion vector matrix
         motion_vector = Mat.zeros(rows, cols, CvType.CV_8UC1);
-        // test
+        // test case
         color = new Scalar(240,230,140);
         prevMV = null;
         currMV = null;
