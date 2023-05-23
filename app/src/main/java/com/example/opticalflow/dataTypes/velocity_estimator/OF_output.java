@@ -1,4 +1,4 @@
-package com.example.opticalflow.dataTypes;
+package com.example.opticalflow.dataTypes.velocity_estimator;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;

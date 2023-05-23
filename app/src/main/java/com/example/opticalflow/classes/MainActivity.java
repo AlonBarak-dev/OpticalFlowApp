@@ -11,10 +11,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.opticalflow.dataTypes.OF_output;
-import com.example.opticalflow.interfaces.OpticalFlow;
+import com.example.opticalflow.classes.velocity_estimator.Basic_fusion;
+import com.example.opticalflow.classes.velocity_estimator.FraneBack;
+import com.example.opticalflow.classes.velocity_estimator.IMU_estimator;
+import com.example.opticalflow.classes.velocity_estimator.KLT;
+import com.example.opticalflow.classes.velocity_estimator.MotionVectorViz;
+import com.example.opticalflow.dataTypes.velocity_estimator.OF_output;
+import com.example.opticalflow.interfaces.velocity_estimator.OpticalFlow;
 import com.example.opticalflow.R;
-import com.example.opticalflow.interfaces.Sensor_fusion;
+import com.example.opticalflow.interfaces.velocity_estimator.Sensor_fusion;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -234,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 else{
                     optical_flow = new KLT(vel_pred_text);
                 }
+                break;
             default:
                 break;
         }

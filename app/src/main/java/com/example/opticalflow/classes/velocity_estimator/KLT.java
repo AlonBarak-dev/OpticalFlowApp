@@ -1,12 +1,11 @@
-package com.example.opticalflow.classes;
+package com.example.opticalflow.classes.velocity_estimator;
 
 import android.util.Log;
 import android.widget.TextView;
 
-import com.example.opticalflow.dataTypes.OF_output;
-import com.example.opticalflow.interfaces.OpticalFlow;
+import com.example.opticalflow.dataTypes.velocity_estimator.OF_output;
+import com.example.opticalflow.interfaces.velocity_estimator.OpticalFlow;
 
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfFloat;
@@ -14,7 +13,6 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.core.TermCriteria;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.video.Video;
 import java.util.concurrent.Semaphore;

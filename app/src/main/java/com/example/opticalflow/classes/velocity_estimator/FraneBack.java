@@ -1,9 +1,9 @@
-package com.example.opticalflow.classes;
+package com.example.opticalflow.classes.velocity_estimator;
 
 import android.util.Log;
 
-import com.example.opticalflow.dataTypes.OF_output;
-import com.example.opticalflow.interfaces.OpticalFlow;
+import com.example.opticalflow.dataTypes.velocity_estimator.OF_output;
+import com.example.opticalflow.interfaces.velocity_estimator.OpticalFlow;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;

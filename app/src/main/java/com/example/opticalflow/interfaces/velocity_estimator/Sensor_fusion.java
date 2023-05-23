@@ -1,4 +1,4 @@
-package com.example.opticalflow.interfaces;
+package com.example.opticalflow.interfaces.velocity_estimator;
 
 import org.opencv.core.Point;
 

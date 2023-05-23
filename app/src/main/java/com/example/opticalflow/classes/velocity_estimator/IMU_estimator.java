@@ -1,4 +1,4 @@
-package com.example.opticalflow.classes;
+package com.example.opticalflow.classes.velocity_estimator;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

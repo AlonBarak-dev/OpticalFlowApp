@@ -1,6 +1,6 @@
-package com.example.opticalflow.classes;
+package com.example.opticalflow.classes.velocity_estimator;
 
-import com.example.opticalflow.interfaces.Sensor_fusion;
+import com.example.opticalflow.interfaces.velocity_estimator.Sensor_fusion;
 
 import org.opencv.core.Point;
 

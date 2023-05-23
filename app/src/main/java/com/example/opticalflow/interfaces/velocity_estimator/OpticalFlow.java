@@ -1,6 +1,6 @@
-package com.example.opticalflow.interfaces;
+package com.example.opticalflow.interfaces.velocity_estimator;
 
-import com.example.opticalflow.dataTypes.OF_output;
+import com.example.opticalflow.dataTypes.velocity_estimator.OF_output;
 
 import org.opencv.core.Mat;
 
